@@ -1,22 +1,15 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 
-import TalkGenPage from './pages/talkgen/Page';
+import TalkGenPage from './pages/imagegen/Page';
 
 // 1. 메인 홈 화면 컴포넌트
 function Home() {
   const navigate = useNavigate();
 
   const features = [
-    { id: 1, title: '인간 언어 모델', path: '/language-model' },
-    { id: 2, title: '인간 객체 인식', path: '/object-detection' },
-    { id: 3, title: '인간 이상 탐지', path: '/anomaly-detection' },
-    { id: 4, title: '인간 라우팅 신경망', path: '/neural-routing' },
-    { id: 5, title: '인간 강화학습', path: '/reinforcement' },
-    { id: 6, title: '인간 추천 시스템', path: '/recommendation' },
-    { id: 7, title: '인간 음성 합성', path: '/tts' },
-    { id: 8, title: '인간 튜링 머신', path: '/turing-machine' },
-    { id: 9, title: '인간 군집 지능', path: '/swarm' },
+    { id: 1, title: '인간 사진 생성', path: '/imageGen-model' },
+    { id: 2, title: '인간 숫자 인식', path: '/number-model' }
   ];
 
   return (
@@ -63,15 +56,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/language-model" element={<TalkGenPage title="인간 언어 모델" />} />
-        <Route path="/object-detection" element={<FeaturePage title="인간 객체 인식" />} />
-        <Route path="/anomaly-detection" element={<FeaturePage title="인간 이상 탐지" />} />
-        <Route path="/neural-routing" element={<FeaturePage title="인간 라우팅 신경망" />} />
-        <Route path="/reinforcement" element={<FeaturePage title="인간 강화학습" />} />
-        <Route path="/recommendation" element={<FeaturePage title="인간 추천 시스템" />} />
-        <Route path="/tts" element={<FeaturePage title="인간 음성 합성" />} />
-        <Route path="/turing-machine" element={<FeaturePage title="인간 튜링 머신" />} />
-        <Route path="/swarm" element={<FeaturePage title="인간 군집 지능" />} />
+        <Route path="/imageGen-model" element={<TalkGenPage title="인간 사진 생성" />} />
+        <Route path="/number-model" element={<FeaturePage title="인간 숫자 인식" />} />
       </Routes>
     </BrowserRouter>
   );
