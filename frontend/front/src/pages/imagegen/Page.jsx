@@ -6,35 +6,36 @@ function TalkGenPage() {
   
   const [images, setImages] = useState([]);
   const [generation, setGeneration] = useState(1);
+  
+  // ★ 방금 투표한 번호를 기억할 새로운 상태 (초기값은 null)
+  const [lastVoted, setLastVoted] = useState(null);
 
-  // 1. 서버에서 이미지 세대를 불러오는 함수 (기존과 동일)
   const fetchImages = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/image/noise');  
+      const response = await fetch('http://localhost:8080/api/image/noise'); // 백엔드 포트에 맞게 수정되어 있다고 가정 (예: 5173 또는 8080)
       const data = await response.json();
       
       if (Array.isArray(data.images)) {
+        // 세대가 바뀌면 이전 투표 기록 메세지를 지워줍니다.
+        if (data.generation !== generation) {
+          setLastVoted(null); 
+        }
         setImages(data.images);
         setGeneration(data.generation);
-      } else {
-        console.error("오류: 데이터 형식이 맞지 않습니다.");
       }
     } catch (error) {
       console.error("백엔드와 연결할 수 없습니다.", error);
     }
   };
 
-  // 2. ★ 새로 추가된 투표 전송 함수 ★
   const handleVote = async (selectedIndex) => {
     try {
-      // 백엔드의 DTO(VoteRequest) 형태에 맞춰 보낼 데이터를 만듭니다.
       const voteData = {
         generation: generation,
-        selectedIndex: selectedIndex // 1, 2, 3 중 하나
+        selectedIndex: selectedIndex
       };
 
-      // POST 방식으로 /api/vote 주소에 데이터를 쏩니다.
-      const response = await fetch('http://localhost:8080/api/vote', {
+      const response = await fetch('http://localhost:8080/api/vote', { // 백엔드 포트에 맞게 수정되어 있다고 가정
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -43,13 +44,10 @@ function TalkGenPage() {
       });
 
       if (response.ok) {
-        // 백엔드에서 정상적으로 처리되었다면 알림을 띄웁니다.
-        alert(`${generation}세대의 ${selectedIndex}번 이미지에 투표 완료!`);
-        
-        // 투표 후에 새로운 이미지를 받고 싶다면 여기서 fetchImages()를 다시 호출해도 좋습니다.
-        // fetchImages(); 
+        // ★ alert 창을 지우고, 방금 누른 번호를 상태에 저장합니다.
+        setLastVoted(selectedIndex);
       } else {
-        alert("투표 처리에 실패했습니다.");
+        alert("투표 처리에 실패했습니다."); // 에러일 때만 알림을 띄웁니다.
       }
     } catch (error) {
       console.error("투표 전송 중 오류 발생:", error);
@@ -57,17 +55,12 @@ function TalkGenPage() {
   };
 
   useEffect(() => {
-    // 1. 화면에 들어오자마자 최초 1회 즉시 실행
     fetchImages();
-
-    // 2. 3초(3000ms)마다 fetchImages 함수를 무한 반복 실행 (새로운 세대가 나왔는지 계속 감시!)
     const pollingInterval = setInterval(() => {
       fetchImages();
     }, 3000);
-
-    // 3. 유저가 다른 페이지로 이동하면 감시(타이머)를 종료해서 메모리 누수 방지
     return () => clearInterval(pollingInterval);
-  }, []);
+  }, [generation]); // generation 값이 바뀔 때마다 useEffect 내부 로직이 최신 값을 참조하도록 의존성 배열 업데이트
 
   return (
     <div style={styles.wrapper}>
@@ -84,7 +77,6 @@ function TalkGenPage() {
                   alt={`${generation}세대 이미지 ${index + 1}`} 
                   style={styles.noiseImage} 
                 />
-                {/* 3. ★ 버튼 클릭 시 handleVote 함수를 실행하도록 연결 ★ */}
                 <button 
                   style={styles.voteButton}
                   onClick={() => handleVote(index + 1)}
@@ -97,6 +89,13 @@ function TalkGenPage() {
             <p>서버에서 세대 이미지를 불러오는 중...</p>
           )}
         </div>
+        
+        {/* ★ 메인으로 돌아가기 버튼 바로 위: 투표 완료 메세지 표시 영역 */}
+        {lastVoted && (
+          <div style={styles.voteMessage}>
+            ✅ 방금 {lastVoted}번 이미지에 투표했습니다!
+          </div>
+        )}
         
         <button onClick={() => navigate('/')} style={styles.backButton}>
           메인으로 돌아가기
@@ -133,10 +132,20 @@ const styles = {
     backgroundColor: '#4CAF50', color: 'white', border: 'none', borderRadius: '8px',
     width: '100%', transition: '0.2s'
   },
+  // ★ 추가된 메세지 스타일 (연한 초록색 배경에 진한 초록색 글씨)
+  voteMessage: {
+    marginTop: '10px',
+    padding: '10px 20px',
+    backgroundColor: '#e6f4ea',
+    color: '#137333',
+    borderRadius: '8px',
+    fontWeight: 'bold',
+    fontSize: '15px'
+  },
   backButton: {
     padding: '10px 20px', fontSize: '15px', cursor: 'pointer',
     backgroundColor: '#333', color: '#fff', border: 'none',
-    borderRadius: '5px', marginTop: '20px'
+    borderRadius: '5px', marginTop: '20px' // 여백 살짝 조정
   }
 };
 

@@ -6,20 +6,14 @@ import java.io.IOException;
 import java.util.Map;
 
 public interface ImageGenService {
-	
-	/**
-	 * 이미지 생성
-	 * @param generation
-	 */
-	void generateImagesForGeneration(int generation);
-	/**
-	 * 노이즈 생성및 저장
-	 * @param file
-	 */
-	void createAndSaveNoiseImage(File file)  throws IOException;
-	Map<String, Object> getGenerationImages();
-	public int getCurrentGeneration();
-	void generateRandomImages(int gen);
-	public void evolveToNextGeneration(int winnerIndex);
-	void createNoiseImage(File saveFile, BufferedImage original, double mutationRate) throws Exception;
+	// 1. 이미지 달라고 할 때
+    Map<String, Object> getGenerationImages();
+    
+    // 2. 진화하라고 명령할 때
+    void evolveToNextGeneration(int winnerIndex);
+    
+    // 3. 현재 몇 세대인지 물어볼 때
+    int getCurrentGeneration();
+    
+    void generateImagesForGeneration(int gen);
 }

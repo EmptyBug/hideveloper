@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 import click.backend.imageGen.inter.ImageGenService;
 
-@Service
+//얘는 픽셀
 public class ImageGenServiceImpl implements ImageGenService{
 		
 	@Value("${project.image.base-dir}")
@@ -30,7 +30,6 @@ public class ImageGenServiceImpl implements ImageGenService{
         return currentGeneration;
     }
  // 완전 무작위 노이즈 이미지 3개 생성 (1세대용)
-   @Override
    public void generateRandomImages(int gen) {
         File dir = new File(BASE_DIR + gen + "/");
         if (!dir.exists()) dir.mkdirs();
@@ -91,7 +90,6 @@ public class ImageGenServiceImpl implements ImageGenService{
             e.printStackTrace();
         }
     }
-   @Override
     public void createNoiseImage(File saveFile, BufferedImage original, double mutationRate) throws Exception {
         int width = 256, height = 256;
         BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -115,7 +113,6 @@ public class ImageGenServiceImpl implements ImageGenService{
     }
 
     // 실제 노이즈 픽셀을 그리고 파일로 저장하는 로직
-    @Override
     public void createAndSaveNoiseImage(File file) throws IOException {
         int width = 256;
         int height = 256;

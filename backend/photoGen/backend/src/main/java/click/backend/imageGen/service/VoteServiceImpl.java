@@ -18,8 +18,8 @@ public class VoteServiceImpl implements VoteService{
 	
 	private final ImageGenService imageGenService;
 	// 진화 조건 설정
-    private final int TARGET_VOTES = 1; // 목표 투표수
-    private final int TIME_LIMIT_SECONDS = 0; // 제한 시간 (테스트를 위해 60초로 설정. 나중에 늘리세요!)
+    private final int TARGET_VOTES = 1	; // 목표 투표수
+    private final int TIME_LIMIT_SECONDS = 100; // 제한 시간 (테스트를 위해 60초로 설정. 나중에 늘리세요!)
     
     // 현재 세대가 시작된 시간 기록
     private LocalDateTime generationStartTime;
